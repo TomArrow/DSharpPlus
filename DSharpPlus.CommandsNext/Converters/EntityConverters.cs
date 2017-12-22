@@ -181,7 +181,11 @@ namespace DSharpPlus.CommandsNext.Converters
 
         static DiscordEmojiConverter()
         {
-            EmoteRegex = new Regex(@"<:([a-zA-Z0-9_]+?):(\d+?)>", RegexOptions.ECMAScript);
+#if NETSTANDARD1_1
+            EmoteRegex = new Regex(@"^<a?:([a-zA-Z0-9_]+?):(\d+?)>$", RegexOptions.ECMAScript);
+#else
+            EmoteRegex = new Regex(@"^<a?:([a-zA-Z0-9_]+?):(\d+?)>$", RegexOptions.ECMAScript | RegexOptions.Compiled);
+#endif
         }
 
         public bool TryConvert(string value, CommandContext ctx, out DiscordEmoji result)
