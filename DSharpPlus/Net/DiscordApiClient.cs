@@ -864,6 +864,8 @@ namespace DSharpPlus.Net
         #region Member
         internal Task<DiscordUser> GetCurrentUserAsync() =>
             this.GetUserAsync("@me");
+        internal Task<ulong[]> GetCurrentUserGuildsAsync() =>
+            this.GetUserGuildsAsync("@me");
 
         internal Task<DiscordUser> GetUserAsync(ulong user) =>
             this.GetUserAsync(user.ToString(CultureInfo.InvariantCulture));
@@ -880,6 +882,24 @@ namespace DSharpPlus.Net
             var duser = new DiscordUser(user_raw) { Discord = this.Discord };
 
             return duser;
+        }
+        internal async Task<ulong[]> GetUserGuildsAsync(string user_id="@me")
+        {
+            List<ulong> ids = new List<ulong>();
+            var route = string.Concat(Endpoints.USERS, "/:user_id/guilds");
+            var bucket = this.Rest.GetBucket(RestRequestMethod.GET, route, new { user_id }, out var path);
+
+            var url = new Uri(string.Concat(Utilities.GetApiBaseUri(), path));
+            var res = await this.DoRequestAsync(this.Discord, bucket, url, RestRequestMethod.GET);
+
+            var guilds = JsonConvert.DeserializeObject<DiscordGuild[]>(res.Response);
+
+            foreach (var guild in guilds)
+            {
+                ids.Add(guild.Id);
+            }
+
+            return ids.ToArray();
         }
 
         internal async Task<DiscordMember> GetGuildMemberAsync(ulong guild_id, ulong user_id)

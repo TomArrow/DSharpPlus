@@ -821,6 +821,17 @@ namespace DSharpPlus
         }
 
         /// <summary>
+        /// Gets our guilds
+        /// </summary>
+        /// <returns></returns>
+        public async Task<ulong[]> GetCurrentUserGuildsAsync()
+        {
+            var guilds = await this.ApiClient.GetCurrentUserGuildsAsync();
+
+            return guilds;
+        }
+
+        /// <summary>
         /// Gets a channel
         /// </summary>
         /// <param name="id"></param>
@@ -1040,7 +1051,7 @@ namespace DSharpPlus
             {
                 case "ready":
                     var glds = (JArray)dat["guilds"];
-                    var dmcs = (JArray)dat["private_channels"];
+                    var dmcs = (JArray)dat["private_channels"]; 
                     await OnReadyEventAsync(dat.ToObject<ReadyPayload>(), glds, dmcs);
                     break;
 
