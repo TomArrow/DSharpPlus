@@ -124,7 +124,7 @@ namespace DSharpPlus.Entities
 
         #region Overriden user properties
         [JsonIgnore]
-        internal DiscordUser User => this.Discord.UserCache[this.Id];
+        internal DiscordUser User => this.Discord == null ? new DiscordUser() : this.Discord.UserCache[this.Id];
 
         /// <summary>
         /// Gets this member's username.
